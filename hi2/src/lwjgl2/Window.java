@@ -10,7 +10,9 @@ public class Window {
 	
 	public Window() {
 		try {
-			Display.setDisplayMode(new DisplayMode(800,600));
+			Display.setDisplayMode(new DisplayMode(1024,768));
+			//Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
+
 			
 		} catch (LWJGLException e) {
 			e.printStackTrace();
@@ -49,6 +51,10 @@ public class Window {
 	public void update() {
 		Display.update();
         Display.sync(120);
+	}
+
+	public void destroy(){
+		Display.destroy();
 	}
 		
 }

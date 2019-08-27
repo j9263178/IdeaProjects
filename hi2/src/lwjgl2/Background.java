@@ -19,7 +19,6 @@ public class Background{
 	
 	vbo vbo;
 	Shader shader;
-//	Camara camara;
 	String bg;
 	Texture tex;
 	ArrayList<sheet> sheets;
@@ -31,89 +30,65 @@ public class Background{
 	public Vector2f pos,vel,acc;
 	
 	public Background(Shader shader,String bg,float x ,float y,float w,float h) {
-		
-		//this.camara=camara;
 		this.x=x;
 		this.y=y;
 		this.w=w;
 		this.h=h;
 		this.shader=shader;
 		this.bg=bg;
-		setUp();
-		
-	}
-	
-	public void setUp() {
+
+
 		d = size/2;
-		
+
 		vertices = new float[] {
-				 x-w/2, y+h/2,0,  //top left
-				 x+w/2, y+h/2,0,	//top right
-				 x+w/2, y-h/2,0,	//bottom right
-				 x-w/2, y-h/2,0   //bottom left		
-    	};
-		
+				x-w/2, y+h/2,0,  //top left
+				x+w/2, y+h/2,0,	//top right
+				x+w/2, y-h/2,0,	//bottom right
+				x-w/2, y-h/2,0   //bottom left
+		};
+
 		tex_coords = new float[] {
-    			0,0,  //top left
-    			1,0,  //top right
-    			1,1,  //bottom right
-    			0,1  //bottom left	
-    			
-    	};
-		
+				0,0,  //top left
+				1,0,  //top right
+				1,1,  //bottom right
+				0,1  //bottom left
+
+		};
+
 		colors = new float[] {
-    			0.4f,0.35f,0.3f, //top left
-    			0.4f,0.35f,0.3f,	//top right
-    			0.4f,0.35f,0.3f,	//bottom right
-    			0.2f,0.1f,0.04f//bottom left
-    			
-    	};
-		
+				1.0f,1.0f,1.0f, //top left
+				1.0f,1.0f,1.0f,	//top right
+				1.0f,1.0f,1.0f,	//bottom right
+				1.0f,1.0f,1.0f//bottom left
+
+		};
+
 		vbo=new vbo(vertices,tex_coords,colors);
+
 		try {
 			this.tex=TextureLoader.getTexture("PNG", new FileInputStream(new File("sheets/"+bg)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	
 	}
-	
-	public void setPose(int i,int j) {
-		this.i=i;
-		this.j=j;
+
+	public void setColor(float[] newColor){
+		this.colors=newColor;
+		vbo=new vbo(vertices,tex_coords,colors);
 	}
-	
+
 	public void draw() {
-	//	target = scale;
-	//	projection = new Matrix4f().ortho2D(-350,350,-350,350).scale(512);
 		tex.bind();
 		shader.setUniform("texmodifier", new Matrix4f().setTranslation(0, 0, 0));
 		vbo.render();
 	}
-	
 
-
-
-	public void update() {
-		
-		if(!vel.equals(0, 0) || !acc.equals(0,0)) {
-			vel.x+=0.1*acc.x;
-			vel.y+=0.1*acc.y;
-			pos.x+=0.1*vel.x;
-			pos.y+=0.1*vel.y;
-			
-			vertices = new float[] {
-					pos.x-d,pos.y+d,0,  //top left
-					pos.x+d,pos.y+d,0,	//top right
-					pos.x+d,pos.y-d,0,	//bottom right
-					pos.x-d,pos.y-d,0   //bottom left		
-	    	};
-			vbo.newVs(vertices);
-		}
-		
+	public void setFrame(int i,int j) {
+		this.i=i;
+		this.j=j;
 	}
-	
-	public void next() {
+
+	public void nextFrame() {
 		if(i>=5) {
 			i=0;
 			
@@ -122,7 +97,6 @@ public class Background{
 			}else {j++;}
 			
 		}else{i++;}
-		
 		
 	}
 

@@ -14,7 +14,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import lwjgl2.*;
 
-public class vboBox{
+public class Entity {
 	
 	vbo vbo;
 	Shader shader;
@@ -29,7 +29,7 @@ public class vboBox{
 	public Matrix2f rotate;
 	boolean rotating;
 	
-	public vboBox(Shader shader,float x,float y,float size) {
+	public Entity(Shader shader, float x, float y, float size) {
 		sheets = new ArrayList<>();
 		//this.camara=camara;
 		this.shader=shader;
@@ -37,66 +37,47 @@ public class vboBox{
 		vel=new Vector2f(0,0); 
 		acc=new Vector2f(0,0);
 		this.size = size;
-		setUp();
-		
-	}
-	
-	public void setUp() {
-		d = size/2;
-		
+
+		d = this.size/2;
+
 		vertices = new float[] {
 				pos.x -d,pos.y +d,0,  //top left
 				pos.x +d,pos.y +d,0,	//top right
 				pos.x +d,pos.y -d,0,	//bottom right
-				pos.x -d,pos.y -d,0   //bottom left		
-    	};
-		
+				pos.x -d,pos.y -d,0   //bottom left
+		};
+
 		tex_coords = new float[] {
-    			0,0,  //top left
-    			1,0,  //top right
-    			1,1,  //bottom right
-    			0,1  //bottom left	
-    			
-    	};
-		
+				0,0,  //top left
+				1,0,  //top right
+				1,1,  //bottom right
+				0,1  //bottom left
+
+		};
+
 		colors = new float[] {
-    			0.4f,0.35f,0.3f, //top left
-    			0.4f,0.35f,0.3f,	//top right
-    			0.4f,0.35f,0.3f,	//bottom right
-    			0.2f,0.1f,0.04f//bottom left
-    			
-    	};
-		
+				1.0f,1.0f,1.0f, //top left
+				1.0f,1.0f,1.0f,	//top right
+				1.0f,1.0f,1.0f,	//bottom right
+				1.0f,1.0f,1.0f//bottom left
+
+		};
+
 		vbo=new vbo(vertices,tex_coords,colors);
-	
-    	
+		
 	}
-	
+	public void setColor(float[] newColor){
+		this.colors=newColor;
+		vbo=new vbo(vertices,tex_coords,colors);
+	}
+
 	public void setSheet(String name,int n) {
 		sheet = new sheet(name,n);
 	}
-	
-	public void setPose(int i,int j) {
-		this.i=i;
-		this.j=j;
-	}
-	
+
 	public void draw() {
-	//	target = scale;
-	//	projection = new Matrix4f().ortho2D(-350,350,-350,350).scale(512);
 		sheet.bind(i,j,shader);
 		vbo.render();
-	}
-	
-	public void glow() {
-		float[] colors = new float[] {
-    			0.3f,0.3f,0.3f, //top left
-    			0.3f,0.3f,0.3f,	//top right
-    			0.3f,0.3f,0.3f,	//bottom right
-    			0.3f,0.3f,0.3f//bottom left
-    			
-    	};
-		vbo.newCs(colors);
 	}
 
 	public void setPos(float x,float y) {
@@ -123,6 +104,14 @@ public class vboBox{
 		acc.x+=x;
 		acc.y+=y;
 	}
+
+	public void rotate() {
+		rotating=true;
+		rotate=new Matrix2f().rotate(0.2f);
+		pos.mul(rotate);
+
+	}
+
 	public void update() {
 		
 		if(!vel.equals(0, 0) || !acc.equals(0,0)) {
@@ -142,15 +131,10 @@ public class vboBox{
 		
 	}
 	
-	public void rotate() {
-		rotating=true;
-		rotate=new Matrix2f().rotate(0.2f);
-		pos.mul(rotate);
-		
-	}
+
 	
 	
-	public void next() {
+	public void nextFrame() {
 		if(i>=5) {
 			i=0;
 			
@@ -163,7 +147,10 @@ public class vboBox{
 		
 	}
 
-	
+	public void setFrame(int i,int j) {
+		this.i=i;
+		this.j=j;
+	}
 	
 	
 
