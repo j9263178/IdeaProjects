@@ -1,8 +1,10 @@
 package lwjgl2;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 //import map.map;
 
@@ -21,15 +23,13 @@ public class Game {
 	float Mx;
 	float My;
 	float op=0;
-	Entity b;
+	Chara b;
 	
 	public static void main(String[] argv) {
 	        Game Example = new Game();
+	        Example.start();
 	}
 
-	public Game(){
-		this.start();
-	};
 
     public void start() {
 		win = new Window();
@@ -72,10 +72,17 @@ public class Game {
 		ds.get(2).addBackground(new Background(shader,"mid2.png",0.4f,0,3.5f,1.5f));
 		ds.get(3).addBackground(new Background(shader,"front.png",0,-0.5f,3.0f,1.8f));
 
-    	b = new Entity(shader,0f,-0.4f,0.5f);
-    	b.setSheet("Undyne-1.png", 1);
+    	b = new Chara(shader,-0.2f,-0.2f,0.3f);
+    	b.setSheet("undyne.png", 1,1);
+    	b.setFrame(0,0);
     	b.setColor(colors);
-    	ds.get(2).addEntities(b);
+
+		Chara c = new Chara(shader,0.1f,-0.2f,0.3f);
+		c.setSheet("undyne.png", 1,1);
+		c.setFrame(0,0);
+		c.setColor(colors);
+    	ds.get(2).addEntities(c);
+		ds.get(2).addEntities(b);
 
     	//timer things
     	double frame_time=0;
@@ -99,7 +106,7 @@ public class Game {
     		//Mx=Mouse.getX()-300;
     		//My=Mouse.getY()-300;
 
-    		camara.vel.x=(-b.pos.x*512-camara.pos.x)*2;
+    		camara.vel.x=(-b.pos.x*512-camara.pos.x);
     		camara2.vel.x=(-b.pos.x*512-camara.pos.x);
     		camara3.vel.x=(-b.pos.x*512-camara.pos.x)/6;
     		camara4.vel.x=(-b.pos.x*512-camara.pos.x)/8;
@@ -110,7 +117,27 @@ public class Game {
     		camara4.update();
 
 			shader.bind();
-			b.update();
+
+			if(frame_time>=.2){
+				frame_time=0;
+			//	b.updateSheet();
+			}
+
+			Vector2f dis=new Vector2f();
+
+			if(b.box.test(c.box)) {
+				b.pos.sub(c.pos,dis);
+				if(Math.abs(dis.x)>Math.abs(dis.y)){
+					if(b.pos.x>c.pos.x)
+						b.pos.x=c.pos.x+c.size/2;
+					else if(b.pos.x<c.pos.x){
+						b.pos.x=c.pos.x-c.size/2;}}
+				else{
+					if(b.pos.y>c.pos.y)
+						b.pos.y=c.pos.y+c.size/2;
+					else if(b.pos.y<c.pos.y){
+						b.pos.y=c.pos.y-c.size/2;}}
+			}
 
 			for (Depth d : ds) {
 				shader.setUniform("projection", d.camara.getProjection().mul(scale));
@@ -123,13 +150,14 @@ public class Game {
     		shader.unbind();
     		
     		
-    		a.draw("Undyne: \n"+"X:"+Float.toString(b.pos.x)+'\n'+"Y:"+Float.toString(b.pos.y));
+    		a.draw("Undyne: \n"+"X:"+Float.toString(b.pos.x)+'\n'+"Y:"+Float.toString(b.pos.y)
+			+"\n"+b.box.test(c.box)+"\n"+"x:"+(int)(b.pos.x*10)+"\n"+
+					"y:"+(int)(b.pos.y*10));
     		win.update();
         
         	time_2 = Timer.getTime();
     		double passed = time_2 -time;
     		frame_time += passed;
-    		
     	}
         
     }
@@ -144,24 +172,28 @@ public class Game {
             }
 
             if (key == Keyboard.KEY_RIGHT) {
+			//	b.d= Chara.direction.RIGHT;
             	b.addVel(0.1f, 0);
-            	b.setSheet("Undyne-3.png", 1);
+            	//b.setSheet("Undyne-3.png", 1);
              }
             if (key == Keyboard.KEY_LEFT) {
+			//	b.d= Chara.direction.LEFT;
             	b.addVel(-0.1f, 0);
-            	b.setSheet("Undyne-4.png", 1);
+            	//b.setSheet("Undyne-4.png", 1);
              }
             if (key == Keyboard.KEY_DOWN) {
+				//b.d= Chara.direction.DOWN;
             	b.addVel(0, -0.1f);
-            	b.setSheet("Undyne-1.png", 1);
+            	//b.setSheet("Undyne-1.png", 1);
              }
             if (key == Keyboard.KEY_UP) {
+			//	b.d= Chara.direction.UP;
             	b.addVel(0f, 0.1f);
-            	b.setSheet("Undyne-1.png", 1);
+            	//b.setSheet("Undyne-1.png", 1);
              }
             
             if (key == Keyboard.KEY_SPACE) {
-            	b.setSheet("Undyne-2.png", 1);
+            	//b.setSheet("Undyne-2.png", 1);
             	
             	
              }
@@ -180,9 +212,6 @@ public class Game {
                  if (key == Keyboard.KEY_UP) {
                  	b.addVel(0f, -0.1f);
                   }
-            	 if (key == Keyboard.KEY_SPACE) {
-                	 b.setSheet("Undyne-1.png", 1);
-            	}
             }
     	}
     }

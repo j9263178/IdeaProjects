@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.joml.AABBf;
 import org.joml.Matrix2f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -24,21 +25,24 @@ public class Entity {
 	sheet sheet;
 	int i=0,j=0;
 	float d;
-	float size;
+	public float size;
 	public Vector2f pos,vel,acc;
 	public Matrix2f rotate;
 	boolean rotating;
+	public AABB box;
 	
 	public Entity(Shader shader, float x, float y, float size) {
 		sheets = new ArrayList<>();
-		//this.camara=camara;
+
 		this.shader=shader;
 		pos=new Vector2f(x,y);
 		vel=new Vector2f(0,0); 
 		acc=new Vector2f(0,0);
+
 		this.size = size;
 
 		d = this.size/2;
+		this.box=new AABB(pos,size/2);
 
 		vertices = new float[] {
 				pos.x -d,pos.y +d,0,  //top left
@@ -71,8 +75,8 @@ public class Entity {
 		vbo=new vbo(vertices,tex_coords,colors);
 	}
 
-	public void setSheet(String name,int n) {
-		sheet = new sheet(name,n);
+	public void setSheet(String name,int xn,int yn) {
+		sheet = new sheet(name,xn,yn);
 	}
 
 	public void draw() {
@@ -113,7 +117,9 @@ public class Entity {
 	}
 
 	public void update() {
-		
+
+		this.box=new AABB(pos,size/2);
+
 		if(!vel.equals(0, 0) || !acc.equals(0,0)) {
 			vel.x+=0.1*acc.x;
 			vel.y+=0.1*acc.y;

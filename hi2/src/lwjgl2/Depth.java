@@ -23,11 +23,13 @@ public class Depth {
 
     public void drawBg(){
         for(Background b :bg){
+
             b.draw();
         }
     }
     public void drawEn(){
         for(Entity e :entity){
+            e.update();
             e.draw();
         }
     }
