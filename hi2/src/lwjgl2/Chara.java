@@ -13,6 +13,7 @@ public class Chara extends Entity{
     public Chara(Shader shader, float x, float y, float size) {
 
         super(shader, x, y, size);
+
         super.vertices= new float[] {
                 pos.x-d,pos.y+d +0.04f,0,  //top left
                 pos.x+d,pos.y+d +0.04f,0,	//top right
@@ -37,7 +38,7 @@ public class Chara extends Entity{
 
         this.box=new AABB(pos,size/4);
 
-        if(!vel.equals(0, 0) || !acc.equals(0,0)) {
+      //  if(!vel.equals(0, 0) || !acc.equals(0,0)) {
             vel.x+=0.1*acc.x;
             vel.y+=0.1*acc.y;
             pos.x+=0.1*vel.x;
@@ -50,7 +51,7 @@ public class Chara extends Entity{
                     pos.x-d,pos.y-d -0.04f,0   //bottom left
             };
             vbo.newVs(vertices);
-        }
+      //  }
     }
 
 }

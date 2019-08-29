@@ -24,6 +24,7 @@ public class Game {
 	float My;
 	float op=0;
 	Chara b;
+	ArrayList<Depth> ds;
 	
 	public static void main(String[] argv) {
 	        Game Example = new Game();
@@ -57,7 +58,7 @@ public class Game {
     	Camara camara3 =new Camara(800,600);
     	Camara camara4 =new Camara(800,600);
 
-		ArrayList<Depth> ds=new ArrayList<>();
+		ds=new ArrayList<>();
 
 		ds.add(new Depth(camara4));
 		ds.add(new Depth(camara3));
@@ -73,12 +74,12 @@ public class Game {
 		ds.get(3).addBackground(new Background(shader,"front.png",0,-0.5f,3.0f,1.8f));
 
     	b = new Chara(shader,-0.2f,-0.2f,0.3f);
-    	b.setSheet("undyne.png", 1,1);
+    	b.setSheet("undynetest.png", 2,1);
     	b.setFrame(0,0);
     	b.setColor(colors);
 
 		Chara c = new Chara(shader,0.1f,-0.2f,0.3f);
-		c.setSheet("undyne.png", 1,1);
+		c.setSheet("undynetest.png", 2,1);
 		c.setFrame(0,0);
 		c.setColor(colors);
     	ds.get(2).addEntities(c);
@@ -89,11 +90,9 @@ public class Game {
     	double time = Timer.getTime();
     	double time_2=0;
 
-
     	//text here
     	text a =new text("TaipeiSansTCBeta-Bold",24f);
 		a.initGL();
-
 
 
     	while (!win.isClosed()) {
@@ -103,8 +102,8 @@ public class Game {
     		
     		getInput();
 
-    		//Mx=Mouse.getX()-300;
-    		//My=Mouse.getY()-300;
+    		Mx=Mouse.getX()-300;
+    		My=Mouse.getY()-300;
 
     		camara.vel.x=(-b.pos.x*512-camara.pos.x);
     		camara2.vel.x=(-b.pos.x*512-camara.pos.x);
@@ -116,12 +115,16 @@ public class Game {
     		camara3.update();
     		camara4.update();
 
+
 			shader.bind();
 
-			if(frame_time>=.2){
+			if(frame_time>=1.){
 				frame_time=0;
-			//	b.updateSheet();
+				if(ds.get(2).entity.size()>2)
+					ds.get(2).entity.remove(2);
+
 			}
+
 
 			Vector2f dis=new Vector2f();
 
@@ -146,13 +149,14 @@ public class Game {
 				d.drawEn();
 			}
 
+
 			shader.setUniform("ambientStrength",1.0f);
     		shader.unbind();
     		
     		
     		a.draw("Undyne: \n"+"X:"+Float.toString(b.pos.x)+'\n'+"Y:"+Float.toString(b.pos.y)
 			+"\n"+b.box.test(c.box)+"\n"+"x:"+(int)(b.pos.x*10)+"\n"+
-					"y:"+(int)(b.pos.y*10));
+					"y:"+(int)(b.pos.y*10)+"\n"+ds.get(2).entity.size());
     		win.update();
         
         	time_2 = Timer.getTime();
@@ -193,10 +197,13 @@ public class Game {
              }
             
             if (key == Keyboard.KEY_SPACE) {
-            	//b.setSheet("Undyne-2.png", 1);
-            	
-            	
+            	b.setFrame(0,0);
+				ball hi=new ball(shader,b.pos.x,b.pos.y,0.1f);
+				hi.setVel(0.2f,0.0f);
+				hi.setSheet("ball.png",1,1);
+				ds.get(2).addEntities(hi);
              }
+
             }else {
             	 if (key == Keyboard.KEY_RIGHT) {
                  	b.addVel(-0.1f, 0);
@@ -212,6 +219,9 @@ public class Game {
                  if (key == Keyboard.KEY_UP) {
                  	b.addVel(0f, -0.1f);
                   }
+                 if(key==Keyboard.KEY_SPACE){
+					 b.setFrame(1,0);
+				 }
             }
     	}
     }

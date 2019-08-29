@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Depth {
     public Camara camara;
-    private ArrayList<Background> bg;
-    private ArrayList<Entity> entity;
+    public  ArrayList<Background> bg;
+    public  ArrayList<Entity> entity;
 
     public Depth(Camara camara){
         bg=new ArrayList<>();
@@ -23,10 +23,10 @@ public class Depth {
 
     public void drawBg(){
         for(Background b :bg){
-
             b.draw();
         }
     }
+
     public void drawEn(){
         for(Entity e :entity){
             e.update();

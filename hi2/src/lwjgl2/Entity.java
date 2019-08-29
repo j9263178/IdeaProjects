@@ -26,9 +26,8 @@ public class Entity {
 	int i=0,j=0;
 	float d;
 	public float size;
-	public Vector2f pos,vel,acc;
+	public Vector2f pos,vel,acc,center;
 	public Matrix2f rotate;
-	boolean rotating;
 	public AABB box;
 	
 	public Entity(Shader shader, float x, float y, float size) {
@@ -36,6 +35,7 @@ public class Entity {
 
 		this.shader=shader;
 		pos=new Vector2f(x,y);
+		center=new Vector2f(x-0.05f,y);
 		vel=new Vector2f(0,0); 
 		acc=new Vector2f(0,0);
 
@@ -110,11 +110,10 @@ public class Entity {
 	}
 
 	public void rotate() {
-		rotating=true;
-		rotate=new Matrix2f().rotate(0.2f);
-		pos.mul(rotate);
+		rotate=new Matrix2f().rotate(0.01f);
 
 	}
+
 
 	public void update() {
 
@@ -136,27 +135,32 @@ public class Entity {
 		}
 		
 	}
-	
 
-	
-	
-	public void nextFrame() {
+	public void allFrameLoop() {
 		if(i>=5) {
 			i=0;
-			
 			if(j>=5) {
 				j=0;
 			}else {j++;}
-			
 		}else{i++;}
-		
-		
 	}
 
 	public void setFrame(int i,int j) {
 		this.i=i;
 		this.j=j;
 	}
+
+	public void setPose(int j) {
+		this.j=j;
+	}
+
+	public void animation() {
+		if(i>5)
+		{i=0;}
+		i++;
+	}
+
+
 	
 	
 
